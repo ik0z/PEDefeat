@@ -11,6 +11,12 @@ reports/
 # External tools (too large for repo)
 tools/
 
+# Rules directories (users should download separately)
+rules/
+
+# Plugins (user's custom plugins)
+plugins/
+
 # IDE files
 .vs/
 *.user
