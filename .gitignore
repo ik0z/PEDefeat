@@ -1,0 +1,34 @@
+# Build outputs
+bin/
+*.obj
+*.pdb
+*.ilk
+*.exe
+
+# Reports
+reports/
+
+# External tools (too large for repo)
+tools/
+
+# IDE files
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup

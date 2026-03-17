@@ -1,0 +1,122 @@
+# ============================================================================
+#  PEDefeat v1.0 — Requirements & External Tools
+#  Author: Khaled M. Alshammri | @ik0z
+# ============================================================================
+#
+#  BUILD REQUIREMENTS:
+#    - Visual Studio 2022 Build Tools (MSVC C++17, x64)
+#    - Windows SDK 10.0+
+#    - Libraries (auto-linked via #pragma): shlwapi, imagehlp, version, advapi32
+#
+# ============================================================================
+#  EXTERNAL TOOLS — Place in tools/ subdirectory
+# ============================================================================
+
+[tools/sysinternals]
+# Sysinternals Suite — Download from:
+# https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite
+# Or direct: https://download.sysinternals.com/files/SysinternalsSuite.zip
+#
+# Required binaries (place in tools/sysinternals/):
+sigcheck.exe        # or sigcheck64.exe — PE signature verification + VirusTotal lookup
+strings.exe         # or strings64.exe — Advanced string extraction
+listdlls.exe        # listdlls64.exe — DLL listing for running processes
+handle.exe          # handle64.exe — Handle enumeration
+procmon.exe         # Optional — Process Monitor for behavioral analysis
+
+[tools/pe-sieve]
+# PE-sieve — Live process memory scanner
+# https://github.com/hasherezade/pe-sieve/releases
+#
+# Required binaries (place in tools/pe-sieve/):
+pe-sieve64.exe      # x64 scanner (recommended)
+pe-sieve32.exe      # x86 scanner (optional)
+
+[tools/yara]
+# YARA — Pattern matching engine
+# https://github.com/VirusTotal/yara/releases
+#
+# Required binaries (place in tools/yara/):
+yara64.exe          # YARA x64 scanner
+yara32.exe          # YARA x86 scanner (optional)
+yarac64.exe         # YARA rule compiler (optional)
+
+[tools/loki]
+# Loki — IOC/YARA scanner by Florian Roth (compatible rules)
+# https://github.com/Neo23x0/Loki/releases
+#
+# Loki uses standard YARA rules — place Loki-compatible .yar files in rules/yara/
+# PEDefeat natively scans all .yar/.yara files, so Loki rules work out of the box.
+
+# ============================================================================
+#  RULES — Place in rules/ subdirectory
+# ============================================================================
+
+[rules/yara]
+# YARA rules (.yar, .yara files)
+# PEDefeat auto-detects rules/yara/ and scans all .yar/.yara files recursively
+#
+# Recommended rule collections:
+# - Signature-Base (Neo23x0): https://github.com/Neo23x0/signature-base
+# - YARA-Rules community:     https://github.com/Yara-Rules/rules
+# - ReversingLabs:            https://github.com/reversinglabs/reversinglabs-yara-rules
+# - Elastic protections:      https://github.com/elastic/protections-artifacts
+# - Malpedia rules:           https://malpedia.caad.fkie.fraunhofer.de/
+# - Loki indicator rules:     https://github.com/Neo23x0/signature-base/tree/master/yara
+#
+# For maldev — focus on rules that detect YOUR patterns:
+#   - packer detection rules
+#   - shellcode patterns
+#   - injection technique signatures
+#   - C2 framework indicators (Cobalt Strike, Metasploit, Havoc, etc.)
+#   - evasion technique patterns (AMSI bypass, ETW patch, etc.)
+
+[rules/sigma]
+# Sigma rules (.yml, .yaml, .sigma files)
+# PEDefeat matches sigma detection blocks against PE imports and strings
+#
+# Recommended collections:
+# - SigmaHQ official:         https://github.com/SigmaHQ/sigma
+# - Elastic detection rules:  https://github.com/elastic/detection-rules
+# - DFIR report sigma rules:  https://thedfirreport.com/
+#
+# Focus on: process_creation, image_load, file_event categories
+
+[rules/yaml]
+# Custom YAML detection rules
+# Same format as Sigma — PEDefeat processes .yml/.yaml files identically
+# Use this folder for your own custom detection rules
+
+[rules/loki]
+# Loki-compatible IOC rules
+# Place Loki .yar files here or symlink from Loki's signature-base
+# PEDefeat's YARA engine will scan these if --yara=rules/loki is specified
+
+# ============================================================================
+#  PLUGINS — Place in plugins/ subdirectory
+# ============================================================================
+
+[plugins]
+# Plugin DLLs must export: void PluginAnalyze(const char*, const BYTE*, UINT, void*)
+# Optional export: const char* PluginName()
+# See PLUGINS.md for plugin development guide
+
+# ============================================================================
+#  QUICK SETUP (copy-paste)
+# ============================================================================
+#
+#  1. Build:
+#     build.bat
+#
+#  2. Download tools:
+#     a) Sysinternals → extract to tools/sysinternals/
+#     b) PE-sieve     → extract to tools/pe-sieve/
+#     c) YARA         → extract to tools/yara/
+#
+#  3. Download rules:
+#     git clone https://github.com/Neo23x0/signature-base rules/yara/signature-base
+#     git clone https://github.com/SigmaHQ/sigma rules/sigma/sigmahq
+#
+#  4. Run:
+#     bin\PEDefeat.exe target.exe --all
+#     bin\PEDefeat.exe target.exe --all --verbose --dynamic
