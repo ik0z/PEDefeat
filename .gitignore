@@ -1,5 +1,4 @@
 # Build outputs only
-bin/
 *.obj
 *.pdb
 *.ilk
