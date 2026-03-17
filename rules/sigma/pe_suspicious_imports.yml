@@ -1,0 +1,107 @@
+title: Suspicious PE Import Combination - Injection
+id: pd-sigma-001
+status: stable
+level: critical
+description: Detects PE files importing classic process injection API combinations
+author: Khaled M. Alshammri | @ik0z
+date: 2026/03/17
+tags:
+  - attack.defense_evasion
+  - attack.t1055
+detection:
+  selection_injection:
+    - VirtualAllocEx
+    - WriteProcessMemory
+    - CreateRemoteThread
+    - NtCreateThreadEx
+    - QueueUserAPC
+  condition: selection_injection
+falsepositives:
+  - Legitimate debuggers
+  - Security tools
+---
+title: Suspicious PE Import - Credential Access
+id: pd-sigma-002
+status: stable
+level: critical
+description: Detects PE files importing credential harvesting APIs
+author: Khaled M. Alshammri | @ik0z
+date: 2026/03/17
+tags:
+  - attack.credential_access
+  - attack.t1003
+detection:
+  selection_creds:
+    - LsaEnumerateLogonSessions
+    - SamConnect
+    - CredEnumerateA
+    - LsaGetLogonSessionData
+  condition: selection_creds
+falsepositives:
+  - Password managers
+  - Backup tools
+---
+title: Suspicious PE Import - Evasion Techniques
+id: pd-sigma-003
+status: stable
+level: high
+description: Detects PE files importing evasion-related APIs
+author: Khaled M. Alshammri | @ik0z
+date: 2026/03/17
+tags:
+  - attack.defense_evasion
+  - attack.t1562
+detection:
+  selection_evasion:
+    - AmsiScanBuffer
+    - EtwEventWrite
+    - NtSetInformationThread
+    - NtTraceEvent
+  condition: selection_evasion
+falsepositives:
+  - Security monitoring tools
+  - EDR agents
+---
+title: Suspicious PE Strings - C2 Infrastructure
+id: pd-sigma-004
+status: stable
+level: high
+description: Detects PE files containing C2 platform API endpoints
+author: Khaled M. Alshammri | @ik0z
+date: 2026/03/17
+tags:
+  - attack.command_and_control
+  - attack.t1071
+detection:
+  selection_c2:
+    - api.notion.com
+    - discord.com/api
+    - graph.microsoft.com
+    - api.telegram.org
+    - workers.dev
+  condition: selection_c2
+falsepositives:
+  - Legitimate API client applications
+---
+title: Suspicious PE Strings - Ransomware Indicators
+id: pd-sigma-005
+status: stable
+level: critical
+description: Detects PE files containing ransomware-related strings
+author: Khaled M. Alshammri | @ik0z
+date: 2026/03/17
+tags:
+  - attack.impact
+  - attack.t1486
+detection:
+  selection_ransom:
+    - vssadmin delete shadows
+    - wmic shadowcopy delete
+    - bcdedit /set
+    - YOUR FILES HAVE BEEN ENCRYPTED
+    - bitcoin
+    - monero
+    - wbadmin delete catalog
+  condition: selection_ransom
+falsepositives:
+  - Backup management scripts
